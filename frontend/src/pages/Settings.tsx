@@ -28,7 +28,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
     updateSettings(settings)
     setSavedSuccess(true)
     setTimeout(() => {
-      setSavedSuccess(false),
+      setSavedSuccess(false)
     }, 2500)
   }
 
