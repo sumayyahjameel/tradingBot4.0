@@ -46,7 +46,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const activeSignals = mockSignals.filter((s) => s.status === 'ACTIVE').slice(0, 5)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-slate-950 min-h-screen p-6 text-slate-100">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
         <div>

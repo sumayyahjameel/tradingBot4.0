@@ -7,6 +7,9 @@ import {
   Zap,
   CheckCircle2,
   Info,
+  Sparkles,
+  ShieldCheck,
+  Cpu,
 } from 'lucide-react'
 import { TradingSignal, SignalAction, PageId } from '../types'
 import { mockSignals } from '../data/mockData'
@@ -49,40 +52,54 @@ export const Signals: React.FC<SignalsProps> = ({ onNavigate }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 md:p-6 space-y-4 font-mono select-none antialiased bg-[#060810] min-h-screen text-slate-200">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-mono font-bold tracking-wider text-white uppercase">
-              QUANTITATIVE ALPHA SIGNALS
-            </h1>
-            <Badge variant="subtle" size="sm">
-              OUT-OF-SAMPLE RANKING
-            </Badge>
+      <div className="relative overflow-hidden rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 text-[10px] font-semibold tracking-wider text-emerald-400 uppercase">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+              </span>
+              QUANTITATIVE ALPHA SIGNALS // STATISTICAL CONVICTION
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <h1 className="text-lg font-bold tracking-tight text-white uppercase">
+                CROSS-SECTIONAL <span className="text-emerald-400">OPPORTUNITY MATRIX</span>
+              </h1>
+              <span className="text-[10px] px-2 py-0.2 rounded bg-slate-800/90 border border-slate-700/80 text-emerald-300">
+                OUT-OF-SAMPLE RANKED
+              </span>
+            </div>
           </div>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
-            Machine Learning Probabilities & Multi-Factor Cross-Sectional Opportunity Rankings
-          </p>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => onNavigate('models')}>
-            Model Diagnostics
-          </Button>
-          <Button variant="primary" size="sm" onClick={() => onNavigate('positions')}>
-            View Open Positions
-          </Button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onNavigate('models')}
+              className="px-3 py-1.5 rounded text-[11px] font-medium bg-slate-900/60 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-all flex items-center gap-1.5"
+            >
+              <Cpu className="w-3.5 h-3.5 text-slate-400" />
+              Model Diagnostics
+            </button>
+            <button
+              onClick={() => onNavigate('positions')}
+              className="px-3 py-1.5 rounded text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all flex items-center gap-1.5"
+            >
+              <Zap className="w-3.5 h-3.5 text-emerald-400" />
+              View Open Positions
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Filter and Control Toolbar */}
-      <div className="bg-surface border border-zinc-800 p-4 space-y-3">
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 space-y-3 shadow-lg">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-3">
           {/* Search */}
           <div className="w-full lg:w-72">
             <Input
-              icon={<Search className="w-4 h-4" />}
+              icon={<Search className="w-3.5 h-3.5 text-slate-400" />}
               placeholder="Search ticker (e.g. RELIANCE)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -91,15 +108,15 @@ export const Signals: React.FC<SignalsProps> = ({ onNavigate }) => {
 
           {/* Action Filter */}
           <div className="flex items-center gap-1.5 w-full lg:w-auto overflow-x-auto">
-            <span className="text-[11px] font-mono text-zinc-500 uppercase mr-1">ACTION:</span>
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider mr-1">ACTION:</span>
             {(['ALL', 'BUY', 'SELL', 'HOLD'] as const).map((act) => (
               <button
                 key={act}
                 onClick={() => setActionFilter(act)}
-                className={`px-3 py-1 text-xs font-mono border transition-colors ${
+                className={`px-3 py-1 text-[11px] rounded-md transition-all border ${
                   actionFilter === act
-                    ? 'bg-white text-black border-white font-medium'
-                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm font-semibold'
+                    : 'bg-[#070b14] text-slate-400 border-slate-800/80 hover:text-white hover:border-slate-700'
                 }`}
               >
                 {act}
@@ -109,11 +126,11 @@ export const Signals: React.FC<SignalsProps> = ({ onNavigate }) => {
 
           {/* Strategy Filter */}
           <div className="flex items-center gap-1.5 w-full lg:w-auto overflow-x-auto">
-            <span className="text-[11px] font-mono text-zinc-500 uppercase mr-1">STRATEGY:</span>
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider mr-1">STRATEGY:</span>
             <select
               value={strategyFilter}
               onChange={(e) => setStrategyFilter(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-xs font-mono text-white px-2.5 py-1 focus:outline-none focus:border-zinc-500"
+              className="bg-[#070b14] border border-slate-800/80 text-[11px] rounded-md text-slate-200 px-3 py-1.5 focus:outline-none focus:border-emerald-500/50"
             >
               {strategies.map((st) => (
                 <option key={st} value={st}>
@@ -125,9 +142,9 @@ export const Signals: React.FC<SignalsProps> = ({ onNavigate }) => {
         </div>
 
         {/* Confidence Threshold Slider */}
-        <div className="flex items-center justify-between pt-2 border-t border-zinc-900 text-xs font-mono text-zinc-400">
+        <div className="flex items-center justify-between pt-3 border-t border-slate-800/60 text-xs text-slate-400">
           <div className="flex items-center gap-3">
-            <span className="uppercase text-[11px]">Min Model Conviction:</span>
+            <span className="uppercase text-[10px] tracking-wider text-slate-400">Min Model Conviction:</span>
             <input
               type="range"
               min="0.50"
@@ -135,39 +152,39 @@ export const Signals: React.FC<SignalsProps> = ({ onNavigate }) => {
               step="0.05"
               value={minConfidence}
               onChange={(e) => setMinConfidence(parseFloat(e.target.value))}
-              className="w-32 accent-white cursor-pointer"
+              className="w-32 accent-emerald-400 cursor-pointer"
             />
-            <span className="text-white font-semibold num">{(minConfidence * 100).toFixed(0)}%</span>
+            <span className="text-emerald-400 font-bold text-xs">{(minConfidence * 100).toFixed(0)}%</span>
           </div>
-          <span className="text-zinc-500 text-[11px]">
-            Showing {filteredSignals.length} of {signals.length} generated signals
+          <span className="text-slate-500 text-[10px]">
+            Showing <strong className="text-slate-300">{filteredSignals.length}</strong> of {signals.length} generated signals
           </span>
         </div>
       </div>
 
       {/* Signals Table */}
-      <div className="bg-surface border border-zinc-800">
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-mono">
+          <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-400 text-[11px] bg-zinc-950/50">
-                <th className="p-3 font-medium">SYMBOL</th>
-                <th className="p-3 font-medium">ACTION</th>
-                <th className="p-3 font-medium text-right">LTP (INR)</th>
-                <th className="p-3 font-medium">MODEL CONVICTION</th>
-                <th className="p-3 font-medium text-right">ENTRY</th>
-                <th className="p-3 font-medium text-right">STOP LOSS</th>
-                <th className="p-3 font-medium text-right">TARGET</th>
-                <th className="p-3 font-medium text-right">EXP. RETURN</th>
-                <th className="p-3 font-medium">STRATEGY</th>
-                <th className="p-3 font-medium text-right">TIMESTAMP</th>
-                <th className="p-3 font-medium text-center">ACTION</th>
+              <tr className="border-b border-slate-800/80 text-slate-400 text-[10px] uppercase bg-[#070b14]/70">
+                <th className="p-3 font-semibold">SYMBOL</th>
+                <th className="p-3 font-semibold">ACTION</th>
+                <th className="p-3 font-semibold text-right">LTP (INR)</th>
+                <th className="p-3 font-semibold">MODEL CONVICTION</th>
+                <th className="p-3 font-semibold text-right">ENTRY</th>
+                <th className="p-3 font-semibold text-right">STOP LOSS</th>
+                <th className="p-3 font-semibold text-right">TARGET</th>
+                <th className="p-3 font-semibold text-right">EXP. RETURN</th>
+                <th className="p-3 font-semibold">STRATEGY</th>
+                <th className="p-3 font-semibold text-right">TIMESTAMP</th>
+                <th className="p-3 font-semibold text-center">EXECUTION</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-900">
+            <tbody className="divide-y divide-slate-800/40">
               {filteredSignals.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="p-8 text-center text-zinc-500 font-mono">
+                  <td colSpan={11} className="p-8 text-center text-slate-500 font-mono text-xs">
                     NO ACTIVE SIGNALS MATCHING CURRENT FILTER PARAMETERS.
                   </td>
                 </tr>
@@ -175,90 +192,96 @@ export const Signals: React.FC<SignalsProps> = ({ onNavigate }) => {
                 filteredSignals.map((sig) => {
                   const isExecuted = executedIds.has(sig.id)
                   const riskReward = Math.abs((sig.targetPrice - sig.entryPrice) / (sig.entryPrice - sig.stopLoss)).toFixed(2)
+                  const isBuy = sig.action === 'BUY'
+                  const isSell = sig.action === 'SELL'
 
                   return (
                     <tr
                       key={sig.id}
-                      className="hover:bg-zinc-900/40 transition-colors cursor-pointer group"
+                      className="hover:bg-slate-800/30 transition-all duration-150 cursor-pointer group"
                       onClick={() => selectStockBySymbol(sig.symbol)}
                     >
                       <td className="p-3">
-                        <span className="text-white font-bold text-sm block group-hover:underline">{sig.symbol}</span>
-                        <span className="text-[10px] text-zinc-500 truncate block max-w-[150px]">
+                        <span className="text-white font-bold text-xs group-hover:text-emerald-400 transition-colors block">
+                          {sig.symbol}
+                        </span>
+                        <span className="text-[10px] text-slate-500 truncate block max-w-[150px]">
                           {sig.name}
                         </span>
                       </td>
                       <td className="p-3">
-                        <Badge
-                          variant={
-                            sig.action === 'BUY'
-                              ? 'buy'
-                              : sig.action === 'SELL'
-                              ? 'sell'
-                              : 'hold'
-                          }
-                          size="md"
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold border inline-block ${
+                            isBuy
+                              ? 'bg-emerald-950/70 text-emerald-400 border-emerald-500/30'
+                              : isSell
+                              ? 'bg-rose-950/70 text-rose-400 border-rose-500/30'
+                              : 'bg-slate-900 text-slate-400 border-slate-700'
+                          }`}
                         >
                           {sig.action}
-                        </Badge>
+                        </span>
                       </td>
-                      <td className="p-3 text-right text-white font-medium text-sm num">
+                      <td className="p-3 text-right text-white font-semibold text-xs">
                         {formatINR(sig.entryPrice)}
                       </td>
                       <td className="p-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-16 bg-zinc-900 h-2 border border-zinc-800">
+                          <div className="w-16 bg-slate-900 h-1.5 rounded-full overflow-hidden border border-slate-800">
                             <div
-                              className="bg-white h-full transition-all"
+                              className="bg-emerald-400 h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
                               style={{ width: `${sig.confidence * 100}%` }}
                             />
                           </div>
-                          <span className="text-white font-medium num text-xs">
+                          <span className="text-emerald-300 font-bold text-[11px]">
                             {(sig.confidence * 100).toFixed(1)}%
                           </span>
                         </div>
                         {sig.spreadRatio && (
-                          <span className="text-[10px] text-zinc-500 block">
+                          <span className="text-[9px] text-slate-500 block mt-0.5">
                             Spread: {(sig.spreadRatio * 100).toFixed(0)}%
                           </span>
                         )}
                       </td>
-                      <td className="p-3 text-right text-zinc-300 num">{formatINR(sig.entryPrice)}</td>
-                      <td className="p-3 text-right text-zinc-400 num">{formatINR(sig.stopLoss)}</td>
-                      <td className="p-3 text-right text-white font-medium num">{formatINR(sig.targetPrice)}</td>
-                      <td className="p-3 text-right num">
+                      <td className="p-3 text-right text-slate-300">{formatINR(sig.entryPrice)}</td>
+                      <td className="p-3 text-right text-rose-400/80">{formatINR(sig.stopLoss)}</td>
+                      <td className="p-3 text-right text-emerald-400 font-semibold">{formatINR(sig.targetPrice)}</td>
+                      <td className="p-3 text-right">
                         <span
-                          className={`font-semibold ${
-                            sig.expectedReturnPct > 0 ? 'text-white' : 'text-zinc-400'
+                          className={`font-bold text-xs ${
+                            sig.expectedReturnPct > 0 ? 'text-emerald-400' : 'text-slate-400'
                           }`}
                         >
                           {sig.expectedReturnPct > 0 ? `+${sig.expectedReturnPct}%` : `${sig.expectedReturnPct}%`}
                         </span>
-                        <span className="text-[10px] text-zinc-500 block">R:R {riskReward}</span>
+                        <span className="text-[10px] text-slate-500 block mt-0.5">R:R {riskReward}</span>
                       </td>
-                      <td className="p-3 text-zinc-300 text-[11px]">{sig.strategy}</td>
-                      <td className="p-3 text-right text-zinc-500 text-[11px] whitespace-nowrap">
+                      <td className="p-3 text-slate-300 text-[10px]">{sig.strategy}</td>
+                      <td className="p-3 text-right text-slate-500 text-[10px] whitespace-nowrap">
                         {sig.timeAgo}
                       </td>
                       <td className="p-3 text-center" onClick={(e) => e.stopPropagation()}>
                         {isExecuted ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-mono text-zinc-400">
-                            <CheckCircle2 className="w-3 h-3 text-white" /> EXECUTED
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-semibold bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400" /> EXECUTED
                           </span>
                         ) : sig.action === 'HOLD' ? (
-                          <span className="text-zinc-600 text-[11px] font-mono">OBSERVE</span>
+                          <span className="text-slate-600 text-[10px]">OBSERVE</span>
                         ) : (
-                          <Button
-                            variant={sig.action === 'BUY' ? 'primary' : 'outline'}
-                            size="sm"
+                          <button
                             onClick={() => {
                               handleExecute(sig.id)
                               executeSignal(sig)
                             }}
+                            className={`px-2.5 py-1 rounded text-[10px] font-bold border transition-all flex items-center gap-1 mx-auto ${
+                              isBuy
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.2)]'
+                                : 'bg-rose-500/20 text-rose-300 border-rose-500/40 hover:bg-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.2)]'
+                            }`}
                           >
-                            <Zap className="w-3 h-3" />
+                            <Zap className="w-2.5 h-2.5" />
                             {sig.action === 'BUY' ? 'BUY' : 'SHORT'}
-                          </Button>
+                          </button>
                         )}
                       </td>
                     </tr>

@@ -19,8 +19,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
-    <div className="min-h-screen bg-background text-primary flex flex-col font-sans">
-      {/* Top Navbar */}
+<div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col selection:bg-emerald-500/30 selection:text-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.06),rgba(255,255,255,0))]">      {/* Top Navbar */}
       <Navbar
         currentPage={currentPage}
         onNavigate={onNavigate}

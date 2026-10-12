@@ -7,11 +7,11 @@ import {
   CheckCircle2,
   RefreshCw,
   Save,
+  Wifi,
+  Zap,
 } from 'lucide-react'
 import { AppSettings, PageId } from '../types'
 import { mockSettings } from '../data/mockData'
-import { Badge } from '../components/ui/Badge'
-import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { useApp } from '../context/AppContext'
 
@@ -28,7 +28,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
     updateSettings(settings)
     setSavedSuccess(true)
     setTimeout(() => {
-      setSavedSuccess(false)
+      setSavedSuccess(false),
     }, 2500)
   }
 
@@ -38,70 +38,95 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="p-4 md:p-6 space-y-4 font-mono select-none antialiased bg-[#060810] min-h-screen text-slate-200 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
-        <div>
-          <h1 className="text-xl font-mono font-bold tracking-wider text-white uppercase">
-            QUANTITATIVE ENGINE CONFIGURATION & SETTINGS
-          </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
-            Risk Parameters, Trading Constraints, Execution Mode, and Appearance
-          </p>
-        </div>
+      <div className="relative overflow-hidden rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 text-[10px] font-semibold tracking-wider text-emerald-400 uppercase">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+              </span>
+              QUANT ENGINE PARAMETERS // CIRCUIT INVARIANTS
+              <span className="text-slate-600">|</span>
+              <span className="text-slate-400 font-normal flex items-center gap-1">
+                <Wifi className="w-2.5 h-2.5 text-emerald-400 animate-pulse" />
+                Live Kernel Config
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <h1 className="text-lg font-bold tracking-tight text-white uppercase">
+                ENGINE CONFIGURATION & <span className="text-emerald-400">SETTINGS</span>
+              </h1>
+              <span className="text-[10px] px-2 py-0.2 rounded bg-slate-800/90 border border-slate-700/80 text-emerald-300">
+                STRICT RISK GATED
+              </span>
+            </div>
+          </div>
 
-        <div className="flex items-center gap-2">
-          {savedSuccess && (
-            <span className="text-xs font-mono text-white flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5 text-white" /> Settings Saved!
-            </span>
-          )}
-          <Button variant="outline" size="sm" onClick={handleReset}>
-            Reset Defaults
-          </Button>
-          <Button variant="primary" size="sm" onClick={handleSave}>
-            <Save className="w-3.5 h-3.5" /> Save Configuration
-          </Button>
+          <div className="flex items-center gap-2">
+            {savedSuccess && (
+              <span className="text-[11px] text-emerald-400 font-bold flex items-center gap-1 animate-pulse">
+                <CheckCircle2 className="w-3.5 h-3.5" /> SAVED!
+              </span>
+            )}
+            <button
+              onClick={handleReset}
+              className="px-3 py-1.5 rounded text-[11px] font-medium bg-slate-900/60 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-all"
+            >
+              Reset Defaults
+            </button>
+            <button
+              onClick={handleSave}
+              className="px-3.5 py-1.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.25)] transition-all flex items-center gap-1.5"
+            >
+              <Save className="w-3.5 h-3.5 text-emerald-400" />
+              Save Config
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Section 1: Trading Settings */}
-      <div className="bg-surface border border-zinc-800 p-4 space-y-4">
-        <div className="flex items-center gap-2 text-xs font-mono text-white uppercase tracking-wider pb-2 border-b border-zinc-900">
-          <Sliders className="w-4 h-4 text-white" />
-          <span>TRADING & SIZING PARAMETERS</span>
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 space-y-3 shadow-lg">
+        <div className="flex items-center gap-2 text-xs font-semibold text-white uppercase tracking-wider pb-2 border-b border-slate-800/60">
+          <Sliders className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Trading & Sizing Parameters</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div>
-            <label className="text-zinc-400 block mb-1">EXECUTION MODE:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Execution Mode:</label>
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() =>
                   setSettings({
                     ...settings,
                     trading: { ...settings.trading, executionMode: 'PAPER' },
                   })
                 }
-                className={`px-3 py-1.5 border w-full transition-colors ${
+                className={`px-3 py-1.5 rounded text-[11px] font-bold border w-full transition-all ${
                   settings.trading.executionMode === 'PAPER'
-                    ? 'bg-white text-black border-white font-semibold'
-                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                    : 'bg-[#070b14] text-slate-400 border-slate-800 hover:text-white'
                 }`}
               >
                 PAPER SIMULATION
               </button>
               <button
+                type="button"
                 onClick={() =>
                   setSettings({
                     ...settings,
                     trading: { ...settings.trading, executionMode: 'LIVE' },
                   })
                 }
-                className={`px-3 py-1.5 border w-full transition-colors ${
+                className={`px-3 py-1.5 rounded text-[11px] font-bold border w-full transition-all ${
                   settings.trading.executionMode === 'LIVE'
-                    ? 'bg-white text-black border-white font-semibold'
-                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+                    : 'bg-[#070b14] text-slate-400 border-slate-800 hover:text-white'
                 }`}
               >
                 LIVE MARKET
@@ -110,7 +135,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">MAX OPEN CONCURRENT POSITIONS:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Max Concurrent Positions:</label>
             <Input
               type="number"
               value={settings.trading.maxOpenPositions}
@@ -124,7 +149,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">MAX CAPITAL PER TRADE (%):</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Max Capital Per Trade (%):</label>
             <Input
               type="number"
               suffixText="%"
@@ -139,7 +164,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">MIN SIGNAL CONVICTION THRESHOLD:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Min Conviction Threshold:</label>
             <Input
               type="number"
               step="0.05"
@@ -159,7 +184,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">DEFAULT STOP LOSS (%):</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Default Stop Loss (%):</label>
             <Input
               type="number"
               step="0.5"
@@ -175,7 +200,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">DEFAULT TAKE PROFIT TARGET (%):</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Take Profit Target (%):</label>
             <Input
               type="number"
               step="0.5"
@@ -193,15 +218,15 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
       </div>
 
       {/* Section 2: Risk Management Settings */}
-      <div className="bg-surface border border-zinc-800 p-4 space-y-4">
-        <div className="flex items-center gap-2 text-xs font-mono text-white uppercase tracking-wider pb-2 border-b border-zinc-900">
-          <Shield className="w-4 h-4 text-white" />
-          <span>RISK LIMITS & CIRCUIT GUARDS</span>
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 space-y-3 shadow-lg">
+        <div className="flex items-center gap-2 text-xs font-semibold text-white uppercase tracking-wider pb-2 border-b border-slate-800/60">
+          <Shield className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Risk Limits & Circuit Guards</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div>
-            <label className="text-zinc-400 block mb-1">MAX DAILY DRAWDOWN HALT (%):</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Max Daily Drawdown Halt (%):</label>
             <Input
               type="number"
               step="0.5"
@@ -217,7 +242,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">MAX PORTFOLIO EXPOSURE (%):</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Max Portfolio Exposure (%):</label>
             <Input
               type="number"
               suffixText="%"
@@ -232,7 +257,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">MAX SINGLE SECTOR LIMIT (%):</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Max Single Sector Limit (%):</label>
             <Input
               type="number"
               suffixText="%"
@@ -247,7 +272,7 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="text-zinc-400 block mb-1">MAX SINGLE STOCK WEIGHT (%):</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Max Single Stock Weight (%):</label>
             <Input
               type="number"
               suffixText="%"
@@ -262,8 +287,8 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        <div className="pt-2 border-t border-zinc-900 flex flex-col sm:flex-row gap-4 text-xs font-mono">
-          <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
+        <div className="pt-3 border-t border-slate-800/60 flex flex-col sm:flex-row gap-4 text-xs">
+          <label className="flex items-center gap-2 cursor-pointer text-slate-300">
             <input
               type="checkbox"
               checked={settings.risk.enableTrailingStop}
@@ -273,12 +298,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
                   risk: { ...settings.risk, enableTrailingStop: e.target.checked },
                 })
               }
-              className="accent-white"
+              className="accent-emerald-400 w-4 h-4 rounded"
             />
-            <span>Enable Automatic Trailing Stop Loss</span>
+            <span className="text-[11px]">Enable Automatic Trailing Stop Loss</span>
           </label>
 
-          <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
+          <label className="flex items-center gap-2 cursor-pointer text-slate-300">
             <input
               type="checkbox"
               checked={settings.risk.autoHaltOnBreach}
@@ -288,23 +313,23 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
                   risk: { ...settings.risk, autoHaltOnBreach: e.target.checked },
                 })
               }
-              className="accent-white"
+              className="accent-emerald-400 w-4 h-4 rounded"
             />
-            <span>Auto-Halt Bot on Circuit Breach</span>
+            <span className="text-[11px]">Auto-Halt Bot on Circuit Breach</span>
           </label>
         </div>
       </div>
 
       {/* Section 3: Notification Settings */}
-      <div className="bg-surface border border-zinc-800 p-4 space-y-4">
-        <div className="flex items-center gap-2 text-xs font-mono text-white uppercase tracking-wider pb-2 border-b border-zinc-900">
-          <Bell className="w-4 h-4 text-white" />
-          <span>TELEMETRY & ALERT NOTIFICATIONS</span>
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 space-y-3 shadow-lg">
+        <div className="flex items-center gap-2 text-xs font-semibold text-white uppercase tracking-wider pb-2 border-b border-slate-800/60">
+          <Bell className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Telemetry & Alert Notifications</span>
         </div>
 
-        <div className="space-y-3 text-xs font-mono">
+        <div className="space-y-3 text-xs">
           <div>
-            <label className="text-zinc-400 block mb-1">WEBHOOK ENDPOINT URL:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Webhook Endpoint URL:</label>
             <Input
               type="url"
               value={settings.notifications.webhookUrl}
@@ -317,8 +342,8 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
             />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+            <label className="flex items-center gap-2 cursor-pointer text-slate-300">
               <input
                 type="checkbox"
                 checked={settings.notifications.signalAlerts}
@@ -328,12 +353,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
                     notifications: { ...settings.notifications, signalAlerts: e.target.checked },
                   })
                 }
-                className="accent-white"
+                className="accent-emerald-400 w-4 h-4 rounded"
               />
-              <span>Signal Alerts</span>
+              <span className="text-[11px]">Signal Alerts</span>
             </label>
 
-            <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
+            <label className="flex items-center gap-2 cursor-pointer text-slate-300">
               <input
                 type="checkbox"
                 checked={settings.notifications.executionAlerts}
@@ -343,12 +368,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
                     notifications: { ...settings.notifications, executionAlerts: e.target.checked },
                   })
                 }
-                className="accent-white"
+                className="accent-emerald-400 w-4 h-4 rounded"
               />
-              <span>Order Fills</span>
+              <span className="text-[11px]">Order Fills</span>
             </label>
 
-            <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
+            <label className="flex items-center gap-2 cursor-pointer text-slate-300">
               <input
                 type="checkbox"
                 checked={settings.notifications.riskAlerts}
@@ -358,12 +383,12 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
                     notifications: { ...settings.notifications, riskAlerts: e.target.checked },
                   })
                 }
-                className="accent-white"
+                className="accent-emerald-400 w-4 h-4 rounded"
               />
-              <span>Risk Breaches</span>
+              <span className="text-[11px]">Risk Breaches</span>
             </label>
 
-            <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
+            <label className="flex items-center gap-2 cursor-pointer text-slate-300">
               <input
                 type="checkbox"
                 checked={settings.notifications.emailAlerts}
@@ -373,51 +398,53 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
                     notifications: { ...settings.notifications, emailAlerts: e.target.checked },
                   })
                 }
-                className="accent-white"
+                className="accent-emerald-400 w-4 h-4 rounded"
               />
-              <span>Daily Digest</span>
+              <span className="text-[11px]">Daily Digest</span>
             </label>
           </div>
         </div>
       </div>
 
       {/* Section 4: Appearance */}
-      <div className="bg-surface border border-zinc-800 p-4 space-y-4">
-        <div className="flex items-center gap-2 text-xs font-mono text-white uppercase tracking-wider pb-2 border-b border-zinc-900">
-          <Monitor className="w-4 h-4 text-white" />
-          <span>TERMINAL APPEARANCE & DISPLAY</span>
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 space-y-3 shadow-lg">
+        <div className="flex items-center gap-2 text-xs font-semibold text-white uppercase tracking-wider pb-2 border-b border-slate-800/60">
+          <Monitor className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Terminal Display & Layout Density</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div>
-            <label className="text-zinc-400 block mb-1">TABLE & CARD DENSITY:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Table & Card Density:</label>
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() =>
                   setSettings({
                     ...settings,
                     appearance: { ...settings.appearance, density: 'compact' },
                   })
                 }
-                className={`px-3 py-1.5 border w-full transition-colors ${
+                className={`px-3 py-1.5 rounded text-[11px] font-bold border w-full transition-all ${
                   settings.appearance.density === 'compact'
-                    ? 'bg-white text-black border-white font-semibold'
-                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                    : 'bg-[#070b14] text-slate-400 border-slate-800 hover:text-white'
                 }`}
               >
                 COMPACT (HIGH DENSITY)
               </button>
               <button
+                type="button"
                 onClick={() =>
                   setSettings({
                     ...settings,
                     appearance: { ...settings.appearance, density: 'comfortable' },
                   })
                 }
-                className={`px-3 py-1.5 border w-full transition-colors ${
+                className={`px-3 py-1.5 rounded text-[11px] font-bold border w-full transition-all ${
                   settings.appearance.density === 'comfortable'
-                    ? 'bg-white text-black border-white font-semibold'
-                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                    : 'bg-[#070b14] text-slate-400 border-slate-800 hover:text-white'
                 }`}
               >
                 COMFORTABLE
@@ -426,9 +453,9 @@ export const Settings: React.FC<SettingsProps> = ({ onNavigate }) => {
           </div>
 
           <div className="flex flex-col justify-end">
-            <div className="p-2.5 bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400">
-              <span className="text-white font-semibold block mb-0.5">MINIMALIST BLACK-AND-WHITE:</span>
-              High-contrast institutional grayscale is permanently enforced for financial focus.
+            <div className="p-3 rounded-lg bg-[#070b14] border border-slate-800/80 text-[10px] text-slate-400">
+              <span className="text-emerald-400 font-bold block mb-0.5">DARK QUANT MATRIX ENFORCED:</span>
+              High-contrast neon emerald & charcoal frosted theme active across all telemetry views.
             </div>
           </div>
         </div>

@@ -5,43 +5,82 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 7%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 7%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 158 64% 52%;
+    --primary-foreground: 222 47% 4%;
+    --secondary: 217 33% 14%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 14%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 158 64% 52%;
   }
 
   body {
-    @apply bg-background text-primary font-sans antialiased m-0 p-0 selection:bg-zinc-800 selection:text-white;
+    @apply bg-[#07090e] text-slate-100 font-sans antialiased m-0 p-0 selection:bg-emerald-500/30 selection:text-emerald-200;
     overflow-x: hidden;
   }
 
-  /* Monospace numbers with tabular alignment for precision quantitative display */
   .font-mono, .num, [data-tabular="true"] {
     font-feature-settings: 'tnum' on, 'zero' on;
   }
 
-  /* Crisp minimal dark scrollbars */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #09090b;
+    background: #07090e;
   }
   ::-webkit-scrollbar-thumb {
-    background: #27272a;
-    border-radius: 2px;
+    background: #1e293b;
+    border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3f3f46;
+    background: #334155;
   }
 }
 
 @layer utilities {
   .border-subtle {
-    border-color: #1f1f23;
+    border-color: rgba(30, 41, 59, 0.7);
   }
   .border-muted {
-    border-color: #27272a;
+    border-color: rgba(51, 65, 85, 0.7);
   }
   .border-bright {
-    border-color: #3f3f46;
+    border-color: rgba(71, 85, 105, 0.8);
   }
+}
+
+/* quant futuristic polish across shared ui blocks */
+.bg-card,
+[class*="bg-zinc-900"],
+[class*="bg-zinc-950"] {
+  background-color: rgba(13, 18, 31, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(30, 41, 59, 0.8) !important;
+  transition: all 0.2s ease-in-out;
+}
+
+[class*="border-zinc-800"],
+[class*="border-zinc-900"] {
+  border-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* subtle neon hover on metric cards */
+.bg-card:hover,
+[class*="bg-zinc-900"]:hover {
+  border-color: rgba(51, 65, 85, 0.9) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px -3px rgba(16, 185, 129, 0.05) !important;
 }

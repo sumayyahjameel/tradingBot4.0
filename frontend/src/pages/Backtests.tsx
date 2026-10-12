@@ -1,22 +1,15 @@
 import React, { useState } from 'react'
 import {
   Play,
-  Calendar,
-  Layers,
-  Percent,
-  TrendingUp,
-  BarChart3,
+  FileDown,
+  Cpu,
+  Wifi,
   Sliders,
   CheckCircle2,
   RefreshCw,
-  FileDown,
 } from 'lucide-react'
 import { BacktestResult, PageId } from '../types'
 import { mockBacktestResult } from '../data/mockData'
-import { StatCard } from '../components/ui/StatCard'
-import { Badge } from '../components/ui/Badge'
-import { Button } from '../components/ui/Button'
-import { Input } from '../components/ui/Input'
 import { MonochromeAreaChart } from '../components/charts/MonochromeAreaChart'
 import { useApp } from '../context/AppContext'
 
@@ -52,7 +45,7 @@ export const Backtests: React.FC<BacktestsProps> = ({ onNavigate }) => {
       })
       addToast({
         title: 'WALK-FORWARD SIMULATION COMPLETE',
-        description: `Model: ${strategy} | Sharpe: 2.14 | Total Return: +38.4% | Max DD: -11.4%`,
+        description: `Model: ${strategy} | Sharpe: 2.14 | Total Return: +38.4%`,
         type: 'success',
       })
     }, 800)
@@ -92,312 +85,337 @@ export const Backtests: React.FC<BacktestsProps> = ({ onNavigate }) => {
   }))
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
-        <div>
-          <h1 className="text-xl font-mono font-bold tracking-wider text-white uppercase">
-            HISTORICAL BACKTESTING ENGINE
-          </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
-            Walk-Forward Evaluation with Realistic Slippage, Exchange Fees & Zero Lookahead Invariants
-          </p>
-        </div>
+    <div className="p-4 md:p-6 space-y-4 font-mono select-none antialiased bg-[#060810] min-h-screen text-slate-200">
+      <div className="relative overflow-hidden rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 text-[10px] font-semibold tracking-wider text-emerald-400 uppercase">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+              </span>
+              QUANT WALK-FORWARD SIMULATION
+              <span className="text-slate-600">|</span>
+              <span className="text-slate-400 font-normal flex items-center gap-1">
+                <Wifi className="w-2.5 h-2.5 text-emerald-400 animate-pulse" />
+                Zero Lookahead Verified
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <h1 className="text-lg font-bold tracking-tight text-white uppercase">
+                HISTORICAL BACKTESTING <span className="text-emerald-400">ENGINE</span>
+              </h1>
+              <span className="text-[10px] px-2 py-0.2 rounded bg-slate-800/90 border border-slate-700/80 text-emerald-300">
+                OOS EVALUATION
+              </span>
+            </div>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => onNavigate('models')}>
-            Inspect Model
-          </Button>
-          <Button variant="secondary" size="sm" onClick={handleExportCSV}>
-            <FileDown className="w-3.5 h-3.5 mr-1" /> Export Teardown (CSV)
-          </Button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onNavigate('models')}
+              className="px-3 py-1.5 rounded text-[11px] font-medium bg-slate-900/60 border border-slate-800 text-slate-300 hover:text-white transition-all flex items-center gap-1.5"
+            >
+              <Cpu className="w-3.5 h-3.5 text-slate-400" />
+              Inspect Model
+            </button>
+            <button
+              onClick={handleExportCSV}
+              className="px-3 py-1.5 rounded text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 transition-all flex items-center gap-1.5"
+            >
+              <FileDown className="w-3.5 h-3.5 text-emerald-400" />
+              Export Teardown
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Configuration Grid */}
-      <div className="bg-surface border border-zinc-800 p-4">
-        <div className="text-xs font-mono text-zinc-400 mb-3 pb-2 border-b border-zinc-900 uppercase tracking-wider flex items-center justify-between">
-          <span>SIMULATION PARAMETERS</span>
-          <span className="text-[11px] text-zinc-500">Execution Frequency: Daily Bar Close</span>
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 shadow-lg space-y-3">
+        <div className="text-xs text-slate-400 pb-2 border-b border-slate-800/60 uppercase tracking-wider flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sliders className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="font-semibold text-slate-300 text-[11px]">Simulation Parameters</span>
+          </div>
+          <span className="text-[10px] text-slate-500">Frequency: Daily Bar Close</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
-          {/* Strategy */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
           <div>
-            <label className="text-zinc-400 block mb-1">STRATEGY MODEL:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Strategy Model:</label>
             <select
               value={strategy}
               onChange={(e) => setStrategy(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 text-white py-1.5 px-2 focus:outline-none focus:border-zinc-500"
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             >
-              <option value="CrossSectionalRank_v3">CrossSectionalRank_v3 (Ridge + Multi-Factor)</option>
-              <option value="RandomForest_Ensemble_v2">RandomForest_Ensemble_v2 (Tree Regressor)</option>
-              <option value="MomentumBreakout_20d">MomentumBreakout_20d (Rule-based Baseline)</option>
-              <option value="NaiveMean_Baseline">NaiveMean_Baseline (Historical Zero)</option>
+              <option value="CrossSectionalRank_v3">CrossSectionalRank_v3</option>
+              <option value="RandomForest_Ensemble_v2">RandomForest_Ensemble_v2</option>
+              <option value="MomentumBreakout_20d">MomentumBreakout_20d</option>
             </select>
           </div>
 
-          {/* Universe */}
           <div>
-            <label className="text-zinc-400 block mb-1">EQUITY UNIVERSE:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Equity Universe:</label>
             <select
               value={universe}
               onChange={(e) => setUniverse(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 text-white py-1.5 px-2 focus:outline-none focus:border-zinc-500"
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             >
-              <option value="NIFTY 500 Active PIT">NIFTY 500 (Point-in-Time Verified)</option>
-              <option value="NIFTY 50 Leaders">NIFTY 50 Bluechips (Top 50)</option>
-              <option value="NIFTY Midcap 150">NIFTY Midcap 150 Active</option>
+              <option value="NIFTY 500 Active PIT">NIFTY 500 PIT</option>
+              <option value="NIFTY 50 Leaders">NIFTY 50 Leaders</option>
             </select>
           </div>
 
-          {/* Start Date */}
           <div>
-            <label className="text-zinc-400 block mb-1">START DATE:</label>
-            <Input
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Start Date:</label>
+            <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             />
           </div>
 
-          {/* End Date */}
           <div>
-            <label className="text-zinc-400 block mb-1">END DATE:</label>
-            <Input
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">End Date:</label>
+            <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             />
           </div>
 
-          {/* Initial Capital */}
           <div>
-            <label className="text-zinc-400 block mb-1">STARTING CAPITAL (INR):</label>
-            <Input
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Starting Capital:</label>
+            <input
               type="number"
-              prefixText="₹"
               value={initialCapital}
               onChange={(e) => setInitialCapital(e.target.value)}
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             />
           </div>
 
-          {/* Position Sizing */}
           <div>
-            <label className="text-zinc-400 block mb-1">ALLOCATION METHOD:</label>
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Allocation:</label>
             <select
               value={positionSizing}
               onChange={(e) => setPositionSizing(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 text-white py-1.5 px-2 focus:outline-none focus:border-zinc-500"
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             >
-              <option value="SCORE_WEIGHTED">Score-Weighted (Rank Proportional)</option>
-              <option value="INVERSE_VOLATILITY">Inverse-Volatility (Risk Parity)</option>
-              <option value="EQUAL_WEIGHT">Equal-Weight (1 / N)</option>
-              <option value="CONSTRAINED_OPTIMIZED">Mean-Variance Constrained (QP)</option>
+              <option value="SCORE_WEIGHTED">Score-Weighted</option>
+              <option value="INVERSE_VOLATILITY">Inverse-Volatility</option>
+              <option value="EQUAL_WEIGHT">Equal-Weight</option>
             </select>
           </div>
 
-          {/* Slippage */}
           <div>
-            <label className="text-zinc-400 block mb-1">SIMULATED SLIPPAGE (%):</label>
-            <Input
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">Slippage %:</label>
+            <input
               type="number"
               step="0.01"
-              suffixText="%"
               value={slippagePct}
               onChange={(e) => setSlippagePct(e.target.value)}
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             />
           </div>
 
-          {/* Fees */}
           <div>
-            <label className="text-zinc-400 block mb-1">TRANSACTION COST + STT (%):</label>
-            <Input
+            <label className="text-slate-400 block mb-1 text-[10px] uppercase">STT + Fees %:</label>
+            <input
               type="number"
               step="0.01"
-              suffixText="%"
               value={feeRatePct}
               onChange={(e) => setFeeRatePct(e.target.value)}
+              className="w-full bg-[#070b14] border border-slate-800 text-white rounded p-1.5 text-xs focus:outline-none"
             />
           </div>
         </div>
 
-        {/* Action Button */}
-        <div className="mt-4 pt-3 border-t border-zinc-900 flex justify-end">
-          <Button
-            variant="primary"
-            size="lg"
-            isLoading={isRunning}
+        <div className="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+          <span className="text-[10px] text-slate-500 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            STT and exchange fees included
+          </span>
+          <button
             onClick={handleRunBacktest}
+            disabled={isRunning}
+            className="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30"
           >
-            <Play className="w-4 h-4 fill-current" /> RUN QUANTITATIVE BACKTEST
-          </Button>
+            {isRunning ? (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+                SIMULATING...
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5 fill-current text-emerald-400" />
+                RUN BACKTEST
+              </>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* KPI Metrics Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <StatCard
-          title="Total Return"
-          value={`+${result.totalReturnPct.toFixed(2)}%`}
-          delta={`CAGR: ${result.annualizedReturnPct.toFixed(1)}%`}
-          deltaType="positive"
-          subtext={`vs NIFTY +${result.benchmarkReturnPct.toFixed(1)}%`}
-        />
-        <StatCard
-          title="Sharpe Ratio"
-          value={result.sharpeRatio.toFixed(2)}
-          delta={`Sortino: ${result.sortinoRatio.toFixed(2)}`}
-          deltaType="positive"
-          subtext="Rf: 6.5% INR"
-        />
-        <StatCard
-          title="Max Drawdown"
-          value={`-${result.maxDrawdownPct.toFixed(2)}%`}
-          delta="Low Tail Risk"
-          deltaType="positive"
-          subtext="Benchmark: -14.2%"
-        />
-        <StatCard
-          title="Win Rate"
-          value={`${result.winRatePct.toFixed(1)}%`}
-          delta={`${result.winningTrades}W / ${result.losingTrades}L`}
-          subtext="Trade Accuracy"
-        />
-        <StatCard
-          title="Profit Factor"
-          value={result.profitFactor.toFixed(2)}
-          delta="Gross Win/Loss"
-          deltaType="positive"
-          subtext="Robust > 1.8"
-        />
-        <StatCard
-          title="Total Trades"
-          value={result.totalTrades}
-          delta={`Avg: +${result.avgTradeReturnPct}%`}
-          subtext="Executed Fills"
-        />
+        <div className="rounded-lg bg-[#0a0f1d] border border-slate-800/80 p-3 shadow-md">
+          <div className="text-[10px] text-slate-400 uppercase">Total Return</div>
+          <div className="text-lg font-bold text-emerald-400 mt-1">+{result.totalReturnPct.toFixed(2)}%</div>
+          <div className="text-[9px] text-slate-500 mt-0.5">CAGR: {result.annualizedReturnPct.toFixed(1)}%</div>
+        </div>
+
+        <div className="rounded-lg bg-[#0a0f1d] border border-slate-800/80 p-3 shadow-md">
+          <div className="text-[10px] text-slate-400 uppercase">Sharpe Ratio</div>
+          <div className="text-lg font-bold text-white mt-1">{result.sharpeRatio.toFixed(2)}</div>
+          <div className="text-[9px] text-emerald-400 mt-0.5">Sortino: {result.sortinoRatio.toFixed(2)}</div>
+        </div>
+
+        <div className="rounded-lg bg-[#0a0f1d] border border-slate-800/80 p-3 shadow-md">
+          <div className="text-[10px] text-slate-400 uppercase">Max Drawdown</div>
+          <div className="text-lg font-bold text-rose-400 mt-1">-{result.maxDrawdownPct.toFixed(2)}%</div>
+          <div className="text-[9px] text-slate-500 mt-0.5">Bench: -14.2%</div>
+        </div>
+
+        <div className="rounded-lg bg-[#0a0f1d] border border-slate-800/80 p-3 shadow-md">
+          <div className="text-[10px] text-slate-400 uppercase">Win Rate</div>
+          <div className="text-lg font-bold text-emerald-400 mt-1">{result.winRatePct.toFixed(1)}%</div>
+          <div className="text-[9px] text-slate-500 mt-0.5">{result.winningTrades}W / {result.losingTrades}L</div>
+        </div>
+
+        <div className="rounded-lg bg-[#0a0f1d] border border-slate-800/80 p-3 shadow-md">
+          <div className="text-[10px] text-slate-400 uppercase">Profit Factor</div>
+          <div className="text-lg font-bold text-white mt-1">{result.profitFactor.toFixed(2)}</div>
+          <div className="text-[9px] text-slate-500 mt-0.5">Robust &gt; 1.8</div>
+        </div>
+
+        <div className="rounded-lg bg-[#0a0f1d] border border-slate-800/80 p-3 shadow-md">
+          <div className="text-[10px] text-slate-400 uppercase">Total Trades</div>
+          <div className="text-lg font-bold text-white mt-1">{result.totalTrades}</div>
+          <div className="text-[9px] text-emerald-400 mt-0.5">Avg: +{result.avgTradeReturnPct}%</div>
+        </div>
       </div>
 
-      {/* Chart & Results Tabs */}
-      <div className="bg-surface border border-zinc-800 p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-2 border-b border-zinc-900">
+      <div className="rounded-xl bg-[#0a0f1d] border border-slate-800/80 p-4 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-800/60">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab('equity')}
-              className={`px-3 py-1 text-xs font-mono transition-colors border ${
+              className={`px-3 py-1 text-xs rounded-md border transition-all ${
                 activeTab === 'equity'
-                  ? 'bg-white text-black border-white font-medium'
-                  : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm font-semibold'
+                  : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
               CUMULATIVE EQUITY CURVE
             </button>
             <button
               onClick={() => setActiveTab('drawdown')}
-              className={`px-3 py-1 text-xs font-mono transition-colors border ${
+              className={`px-3 py-1 text-xs rounded-md border transition-all ${
                 activeTab === 'drawdown'
-                  ? 'bg-white text-black border-white font-medium'
-                  : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm font-semibold'
+                  : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
               UNDERWATER DRAWDOWN
             </button>
             <button
               onClick={() => setActiveTab('trades')}
-              className={`px-3 py-1 text-xs font-mono transition-colors border ${
+              className={`px-3 py-1 text-xs rounded-md border transition-all ${
                 activeTab === 'trades'
-                  ? 'bg-white text-black border-white font-medium'
-                  : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm font-semibold'
+                  : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
               TRADE AUDIT LOG ({result.trades.length})
             </button>
           </div>
 
-          <span className="text-xs font-mono text-zinc-500">
-            Final Capital: {formatINR(result.finalCapital)}
+          <span className="text-xs text-slate-400">
+            Final Capital: <strong className="text-emerald-400">{formatINR(result.finalCapital)}</strong>
           </span>
         </div>
 
         {activeTab === 'equity' && (
-          <MonochromeAreaChart
-            data={chartData}
-            height={280}
-            primaryLabel="Strategy Equity"
-            secondaryLabel="Nifty 50 Benchmark"
-          />
+          <div className="p-2">
+            <MonochromeAreaChart
+              data={chartData}
+              height={260}
+              primaryLabel="Strategy Equity"
+              secondaryLabel="Nifty 50 Benchmark"
+            />
+          </div>
         )}
 
         {activeTab === 'drawdown' && (
-          <MonochromeAreaChart
-            data={chartData}
-            height={280}
-            valueSuffix="%"
-            valuePrefix=""
-            primaryLabel="Portfolio Drawdown %"
-          />
+          <div className="p-2">
+            <MonochromeAreaChart
+              data={chartData}
+              height={260}
+              valueSuffix="%"
+              valuePrefix=""
+              primaryLabel="Portfolio Drawdown %"
+            />
+          </div>
         )}
 
         {activeTab === 'trades' && (
           <div className="overflow-x-auto mt-2">
-            <table className="w-full text-left text-xs font-mono">
+            <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-zinc-800 text-zinc-400 text-[11px] bg-zinc-950/40">
-                  <th className="p-2.5 font-medium">TRADE ID</th>
-                  <th className="p-2.5 font-medium">SYMBOL</th>
-                  <th className="p-2.5 font-medium">SIDE</th>
-                  <th className="p-2.5 font-medium text-right">ENTRY DATE</th>
-                  <th className="p-2.5 font-medium text-right">EXIT DATE</th>
-                  <th className="p-2.5 font-medium text-right">ENTRY PRICE</th>
-                  <th className="p-2.5 font-medium text-right">EXIT PRICE</th>
-                  <th className="p-2.5 font-medium text-right">SHARES</th>
-                  <th className="p-2.5 font-medium text-right">NET P&L (INR)</th>
-                  <th className="p-2.5 font-medium text-right">RETURN %</th>
-                  <th className="p-2.5 font-medium">EXIT REASON</th>
+                <tr className="border-b border-slate-800/80 text-slate-400 text-[10px] uppercase bg-[#070b14]/70">
+                  <th className="p-2.5 font-semibold">TRADE ID</th>
+                  <th className="p-2.5 font-semibold">SYMBOL</th>
+                  <th className="p-2.5 font-semibold">SIDE</th>
+                  <th className="p-2.5 font-semibold text-right">ENTRY DATE</th>
+                  <th className="p-2.5 font-semibold text-right">EXIT DATE</th>
+                  <th className="p-2.5 font-semibold text-right">ENTRY PRICE</th>
+                  <th className="p-2.5 font-semibold text-right">EXIT PRICE</th>
+                  <th className="p-2.5 font-semibold text-right">SHARES</th>
+                  <th className="p-2.5 font-semibold text-right">NET P&L</th>
+                  <th className="p-2.5 font-semibold text-right">RETURN %</th>
+                  <th className="p-2.5 font-semibold">EXIT REASON</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-900">
+              <tbody className="divide-y divide-slate-800/40">
                 {result.trades.map((tr) => (
                   <tr
                     key={tr.id}
-                    className="hover:bg-zinc-900/40 transition-colors cursor-pointer group"
+                    className="hover:bg-slate-800/30 transition-all duration-150 cursor-pointer group"
                     onClick={() => selectStockBySymbol(tr.symbol)}
                   >
-                    <td className="p-2.5 text-zinc-400">{tr.id}</td>
-                    <td className="p-2.5 text-white font-bold group-hover:underline">{tr.symbol}</td>
-                    <td className="p-2.5">
-                      <Badge variant={tr.side === 'BUY' ? 'buy' : 'sell'} size="sm">
-                        {tr.side}
-                      </Badge>
+                    <td className="p-2.5 text-slate-400">{tr.id}</td>
+                    <td className="p-2.5 text-white font-bold group-hover:text-emerald-400 transition-colors">
+                      {tr.symbol}
                     </td>
-                    <td className="p-2.5 text-right text-zinc-400">{tr.entryDate}</td>
-                    <td className="p-2.5 text-right text-zinc-400">{tr.exitDate}</td>
-                    <td className="p-2.5 text-right text-zinc-300 num">{formatINR(tr.entryPrice)}</td>
-                    <td className="p-2.5 text-right text-white num">{formatINR(tr.exitPrice)}</td>
-                    <td className="p-2.5 text-right text-white num">{tr.shares}</td>
-                    <td className="p-2.5 text-right">
+                    <td className="p-2.5">
                       <span
-                        className={`font-semibold num block ${
-                          tr.pnl >= 0 ? 'text-white' : 'text-zinc-400'
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                          tr.side === 'BUY'
+                            ? 'bg-emerald-950/70 text-emerald-400 border-emerald-500/30'
+                            : 'bg-rose-950/70 text-rose-400 border-rose-500/30'
                         }`}
                       >
+                        {tr.side}
+                      </span>
+                    </td>
+                    <td className="p-2.5 text-right text-slate-400">{tr.entryDate}</td>
+                    <td className="p-2.5 text-right text-slate-400">{tr.exitDate}</td>
+                    <td className="p-2.5 text-right text-slate-300">{formatINR(tr.entryPrice)}</td>
+                    <td className="p-2.5 text-right text-white font-bold">{formatINR(tr.exitPrice)}</td>
+                    <td className="p-2.5 text-right text-white">{tr.shares}</td>
+                    <td className="p-2.5 text-right">
+                      <span className={`font-bold block ${tr.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                         {tr.pnl >= 0 ? `+${formatINR(tr.pnl)}` : formatINR(tr.pnl)}
                       </span>
                     </td>
                     <td className="p-2.5 text-right">
-                      <span
-                        className={`font-semibold num block ${
-                          tr.pnlPct >= 0 ? 'text-white' : 'text-zinc-400'
-                        }`}
-                      >
+                      <span className={`font-bold block ${tr.pnlPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                         {tr.pnlPct >= 0 ? `+${tr.pnlPct.toFixed(2)}%` : `${tr.pnlPct.toFixed(2)}%`}
                       </span>
                     </td>
                     <td className="p-2.5">
-                      <Badge variant="subtle" size="sm">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-900 border border-slate-800 text-slate-300">
                         {tr.exitReason}
-                      </Badge>
+                      </span>
                     </td>
                   </tr>
                 ))}
