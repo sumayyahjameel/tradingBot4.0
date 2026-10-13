@@ -6,10 +6,15 @@ import {
   RefreshCw,
   Crosshair,
   ShieldCheck,
-  Wifi
+  Wifi,
 } from 'lucide-react';
+import { PageId } from '../types';
 
-export default function DashboardTemplate() {
+interface DashboardTemplateProps {
+  onNavigate?: (page: PageId) => void;
+}
+
+export default function DashboardTemplate({ onNavigate }: DashboardTemplateProps = {}) {
   const [activeTab, setActiveTab] = useState<'overview' | 'signals'>('overview');
   const [synced, setSynced] = useState(false);
   const [tick, setTick] = useState(0);
@@ -22,29 +27,68 @@ export default function DashboardTemplate() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSync = () => {
-    setSynced(true);
-    setTimeout(() => setSynced(false), 800);
+  const [liveData, setLiveData] = useState<any>(null);
+  const [trades, setTrades] = useState<any[]>([]);
+
+  const fetchLiveState = async () => {
+    try {
+      setSynced(true);
+      const [stateRes, tradesRes] = await Promise.all([
+        fetch('/api/state'),
+        fetch('/api/trades')
+      ]);
+
+      if (stateRes.ok) {
+        const data = await stateRes.json();
+        setLiveData(data);
+      }
+      if (tradesRes.ok) {
+        const tradesData = await tradesRes.json();
+        setTrades(Array.isArray(tradesData) ? tradesData : tradesData.trades || []);
+      }
+    } catch (err) {
+      console.error('Failed to sync engine:', err);
+    } finally {
+      setTimeout(() => setSynced(false), 800);
+    }
   };
+
+  useEffect(() => {
+    fetchLiveState();
+    const timer = setInterval(fetchLiveState, 2500);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleSync = () => {
+    fetchLiveState();
+  };
+
+  const rawBalance = liveData?.balance ?? 7238535;
+  const balanceInInr = rawBalance > 500000 ? rawBalance : rawBalance * 85;
+  const formattedEquity = '₹' + Math.round(balanceInInr).toLocaleString('en-IN');
+
+  const rawPnl = liveData?.daily_pnl ?? 24380;
+  const pnlInInr = Math.abs(rawPnl) > 5000 ? rawPnl : rawPnl * 85;
+  const formattedPnl = (pnlInInr >= 0 ? '+₹' : '-₹') + Math.round(Math.abs(pnlInInr)).toLocaleString('en-IN');
 
   const stats = [
     {
       title: 'PORTFOLIO EQUITY',
-      value: '₹14,82,450',
-      change: '+12.4%',
+      value: formattedEquity,
+      change: liveData?.win_rate ? `+${liveData.win_rate}%` : '+12.4%',
       isPositive: true,
-      sub: '₹1.64L net weekly gains',
+      sub: liveData?.balance ? 'Live paper engine linked' : '₹1.64L net weekly gains',
     },
     {
       title: 'DAILY REALIZED P&L',
-      value: '+₹24,380',
+      value: formattedPnl,
       change: '+3.85%',
-      isPositive: true,
-      sub: '9/11 trades profitable',
+      isPositive: (liveData?.daily_pnl ?? 0) >= 0,
+      sub: liveData?.trade_count !== undefined ? `${liveData.trade_count} trades executed` : '9/11 trades profitable',
     },
     {
       title: 'MODEL WIN RATE',
-      value: '71.2%',
+      value: liveData?.win_rate ? `${liveData.win_rate}%` : '71.2%',
       change: '+4.1%',
       isPositive: true,
       sub: 'NIFTY 50 statistical edge',
@@ -64,6 +108,20 @@ export default function DashboardTemplate() {
     { symbol: 'RELIANCE 2980 CALL', action: 'ACCUMULATE', qty: '250', price: '₹3,010.50', target: '₹3,090.00', time: '10:42:01' },
     { symbol: 'TCS EQUITY', action: 'EXIT STOP', qty: '100', price: '₹4,120.00', target: '₹4,115.00', time: '10:38:20' },
   ];
+  const displayFeeds = trades.length > 0
+    ? trades.slice(0, 5).map((t: any) => {
+        const sideStr = (t.side || t.action || 'BUY').toUpperCase();
+        const actionDisplay = sideStr.includes('BUY') ? 'LONG BUY' : sideStr.includes('SELL') ? 'SHORT SELL' : sideStr;
+        return {
+          symbol: t.symbol || 'NIFTY 24500 CE',
+          action: actionDisplay,
+          qty: String(t.amount || t.qty || t.size || '100'),
+          price: '₹' + Number(t.price || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 }),
+          target: '₹' + Number((t.price || 0) * 1.02).toLocaleString('en-IN', { maximumFractionDigits: 2 }),
+          time: t.timestamp ? (t.timestamp.includes(':') ? t.timestamp.split('T').pop()?.split('.')[0] || t.timestamp : new Date(t.timestamp).toLocaleTimeString('en-IN')) : 'Live',
+        };
+      })
+    : liveFeeds;
 
   // Dynamic moving wave points
   const p1 = 125 + Math.sin(tick * 0.08) * 9;
@@ -258,7 +316,7 @@ export default function DashboardTemplate() {
             </div>
 
             <div className="divide-y divide-slate-800/40 mt-1">
-              {liveFeeds.map((feed, idx) => (
+              {displayFeeds.map((feed, idx) => (
                 <div key={idx} className="py-2.5 px-1 hover:bg-slate-800/20 rounded transition-colors">
                   <div className="flex items-center justify-between text-[11px]">
                     <div className="flex items-center gap-1.5">
